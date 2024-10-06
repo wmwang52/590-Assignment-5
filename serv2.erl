@@ -2,9 +2,13 @@
 % - [Cora Rogers, Dylan Nicks, William Wang]
 
 -module(serv2).
--export([start/1, loop/1]).
+-export([start/1, loop/1, update/1]).
 
 start(NextPid) ->
+    spawn(serv2, loop, [NextPid]).
+
+update(NextPid) ->
+    io:format("(serv2) Updating to new version...~n"),
     spawn(serv2, loop, [NextPid]).
 
 loop(NextPid) ->
@@ -13,15 +17,14 @@ loop(NextPid) ->
             NextPid ! halt,
             io:format("(serv2) Halting.~n"),
             ok;
+        update ->
+            io:format("(serv2) Received update message.~n"),
+            update(NextPid); 
         Msg when is_list(Msg) ->
             case Msg of
                 [Head | _] when is_integer(Head) ->
                     Sum = lists:sum([X || X <- Msg, is_number(X)]),
                     io:format("(serv2) Sum of numbers: ~p~n", [Sum]),
-                    loop(NextPid);
-                [Head | _] when is_float(Head) ->
-                    Product = lists:foldl(fun(X, Acc) when is_number(X) -> X * Acc; (_, Acc) -> Acc end, 1, Msg),
-                    io:format("(serv2) Product of numbers: ~p~n", [Product]),
                     loop(NextPid);
                 _ ->
                     NextPid ! Msg,
