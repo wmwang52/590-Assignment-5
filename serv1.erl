@@ -9,21 +9,24 @@ start(NextPid) ->
 
 loop(NextPid) ->
     receive
+        update ->
+            io:format("(serv1) Updating code.~n"),
+            serv1:loop(NextPid);  
         halt ->
             NextPid ! halt,
             io:format("(serv1) Halting.~n"),
             ok;
         {Op, A, B} when is_atom(Op), is_number(A), is_number(B) ->
             case Op of
-                'add' ->
+                add ->
                     Result = A + B,
                     io:format("(serv1) ~p + ~p = ~p~n", [A, B, Result]),
                     loop(NextPid);
-                'sub' ->
+                sub ->
                     Result = A - B,
                     io:format("(serv1) ~p - ~p = ~p~n", [A, B, Result]),
                     loop(NextPid);
-                'mult' ->
+                mult ->
                     Result = A * B,
                     io:format("(serv1) ~p * ~p = ~p~n", [A, B, Result]),
                     loop(NextPid);
@@ -40,15 +43,15 @@ loop(NextPid) ->
             end;
         {Op, A} when is_atom(Op), is_number(A) ->
             case Op of
-                'neg' ->
+                neg ->
                     Result = -A,
                     io:format("(serv1) neg ~p = ~p~n", [A, Result]),
                     loop(NextPid);
-                'sqrt' when A >= 0 ->
+                sqrt when A >= 0 ->
                     Result = math:sqrt(A),
                     io:format("(serv1) sqrt ~p = ~p~n", [A, Result]),
                     loop(NextPid);
-                'sqrt' ->
+                sqrt ->
                     io:format("(serv1) Error: sqrt of negative number~n"),
                     loop(NextPid);
                 _ ->

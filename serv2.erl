@@ -9,6 +9,9 @@ start(NextPid) ->
 
 loop(NextPid) ->
     receive
+        update ->
+            io:format("(serv2) Updating code.~n"),
+            serv2:loop(NextPid);
         halt ->
             NextPid ! halt,
             io:format("(serv2) Halting.~n"),
