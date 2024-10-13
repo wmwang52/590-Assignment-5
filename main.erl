@@ -1,4 +1,4 @@
-%Team Members:
+% Team Members:
 % - [Cora Rogers, Dylan Nicks, William Wang]
 
 -module(main).
