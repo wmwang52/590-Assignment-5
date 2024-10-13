@@ -45,6 +45,23 @@ loop(NextPid) ->
                     NextPid ! {Op, A, B},
                     loop(NextPid)
             end;
+        {Op, A} when is_atom(Op), is_number(A) ->
+            case Op of
+                'neg' ->
+                    Result = -A,
+                    io:format("(serv1) neg ~p = ~p~n", [A, Result]),
+                    loop(NextPid);
+                'sqrt' when A >= 0 ->
+                    Result = math:sqrt(A),
+                    io:format("(serv1) sqrt ~p = ~p~n", [A, Result]),
+                    loop(NextPid);
+                'sqrt' ->
+                    io:format("(serv1) Error: sqrt of negative number~n"),
+                    loop(NextPid);
+                _ ->
+                    NextPid ! {Op, A},
+                    loop(NextPid)
+            end;
         Msg ->
             NextPid ! Msg,
             loop(NextPid)
