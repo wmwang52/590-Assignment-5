@@ -20,11 +20,11 @@ loop(Serv1Pid, Serv2Pid, Serv3Pid) ->
             io:format("Main process exiting.~n"),
             ok;
         "update1" ->
-            Serv1Pid ! update,
+            Serv1Pid ! update, 
             io:format("Sent update to serv1.~n"),
             loop(Serv1Pid, Serv2Pid, Serv3Pid);
         "update2" ->
-            Serv2Pid ! update,
+            Serv2Pid ! update, 
             io:format("Sent update to serv2.~n"),
             loop(Serv1Pid, Serv2Pid, Serv3Pid);
         "update3" ->
